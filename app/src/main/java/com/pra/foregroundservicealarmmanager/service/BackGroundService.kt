@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.foregroundservicehandler.ResultActivity
@@ -33,11 +32,11 @@ class BackGroundService : Service() {
             val intent = Intent(this, ResultActivity::class.java)
             intent.putExtra("com.background.notfyID", NOTIFICATION_ID)
             val pendindIntent = PendingIntent.getActivity(
-                this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
+                this, 0, intent, PendingIntent.FLAG_IMMUTABLE
             )
 
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Background Service title").setContentIntent(pendindIntent)
+                .setContentTitle("Background Service Handler").setContentIntent(pendindIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 // TODO set Icon null to hide notification from custom OS
                 //  .setLargeIcon(null)
@@ -50,14 +49,21 @@ class BackGroundService : Service() {
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(this, ChargingStatusReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            this, 1, intent, 0
-        )
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-            SystemClock.elapsedRealtime(), 62*1000,pendingIntent)
+        Log.d("Start Command ", "Start Command")
+        val t = Thread { startJob() }
+        t.start()
         return START_STICKY
+    }
+
+
+    private fun startJob() {
+        println("Not Fire Command")
+        try {
+            Thread.sleep(5000)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+        startJob()
     }
 
     override fun onBind(intent: Intent?): IBinder? {

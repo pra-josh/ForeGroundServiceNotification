@@ -1,4 +1,4 @@
-package com.pra.foregroundservicealarmmanager
+package com.example.foregroundservicehandler
 
 import android.content.Intent
 import android.os.Build
@@ -18,8 +18,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(mBinding?.root)
         val restartServiceIntent = Intent(applicationContext, BackGroundService::class.java)
         mBinding?.btnStart?.setOnClickListener {
-            // Toast.makeText(this,"Start",Toast.LENGTH_SHORT).show()
-
             restartServiceIntent.`package` = packageName
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(restartServiceIntent)
@@ -29,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         mBinding?.btnStop?.setOnClickListener {
-
             stopService(restartServiceIntent)
             Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show()
         }
